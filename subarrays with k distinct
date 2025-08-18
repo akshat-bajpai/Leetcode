@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int helper(vector<int>& nums, int k){
+        if (k<0) return 0;
+        map<int,int> mpp;
+        int l=0;
+        int r=0;
+        int c=0;
+
+        while (r<nums.size()){
+            mpp[nums[r]]++;
+
+            while (mpp.size()>k){
+                mpp[nums[l]]--;
+                if (mpp[nums[l]]==0) mpp.erase(nums[l]);
+                l++;
+            }
+            c+=r-l+1;
+            r++;
+        }
+        return c;
+    }
+
+
+    int subarraysWithKDistinct(vector<int>& nums, int k) {
+        return helper(nums,k)-helper(nums,k-1);
+    }
+};
