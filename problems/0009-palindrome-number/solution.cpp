@@ -1,20 +1,22 @@
 class Solution {
 public:
-    bool isPalindrome(int x) {
-        if (x<0){
-            return false;
+    bool isPalindrome(int y) {
+        int x=y;
+        int max=INT_MAX;
+        int min=INT_MIN;
+        int num=0;
+        while (x!=0){
+            if (num>max/10 || num<min/10) return 0;
+            num=num*10+x%10;
+            x=x/10;
         }
-        int dup=x;
-        int rev=0;
-        while (dup>0){
-            int digit=dup%10;
-            if (rev > INT_MAX/10 || (rev == INT_MAX/10 && digit > 7)) return 0;
-            if (rev < INT_MIN/10 || (rev == INT_MIN/10 && digit < -8)) return 0;
-            rev=rev*10+digit;
-            dup=dup/10;
+        if (num<0) return false;
+        else{
+            if (num==y){
+                return true;
+            }else{
+                return false;
+            }
         }
-        if (rev==x){
-            return true;
-        }else{ return false;}
     }
 };
