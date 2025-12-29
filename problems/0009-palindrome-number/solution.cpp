@@ -1,22 +1,15 @@
 class Solution {
 public:
-    bool isPalindrome(int y) {
-        int x=y;
-        int max=INT_MAX;
-        int min=INT_MIN;
-        int num=0;
-        while (x!=0){
-            if (num>max/10 || num<min/10) return 0;
-            num=num*10+x%10;
-            x=x/10;
+    bool isPalindrome(int x) {
+        if (x<0) return false;
+
+        long long y=0;
+        int c=x;
+        while (c!=0){
+            y=y*10+(c%10);
+            c=c/10;
         }
-        if (num<0) return false;
-        else{
-            if (num==y){
-                return true;
-            }else{
-                return false;
-            }
-        }
+        if (x==y)return true;
+        return false;
     }
 };
