@@ -1,0 +1,37 @@
+class Solution {
+    
+    static bool comp(vector<int>&a,vector<int>&b){
+        if (((1.0*a[0])/(a[1]))>((1.0*b[0])/(1.0*b[1]))) return true;
+        return false;
+    }
+    
+  public:
+
+    double fractionalKnapsack(vector<int>& val, vector<int>& wt, int capacity) {
+        // code here
+        vector<vector<int>>items(val.size(), vector<int>(2));
+        
+        for (int i=0;i<val.size();i++){
+            items[i][0]=val[i];
+            items[i][1]=wt[i];
+        }
+        
+        sort(items.begin(),items.end(),comp);
+        
+        double sum=0;
+        int c=0;
+        
+        for (int i=0;i<items.size();i++){
+            if ((c+items[i][1])<=capacity){
+                sum+=items[i][0];
+                c+=items[i][1];
+            }else{
+                sum+=(capacity-c)*((1.0*items[i][0])/(1.0*items[i][1]));
+                break;
+            }
+        }
+        
+        return sum;
+        
+    }
+};
