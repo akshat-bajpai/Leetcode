@@ -1,13 +1,14 @@
 class Solution {
 public:
     bool checkValidString(string s) {
-        int min=0,max=0;
+        int min=0;
+        int max=0;
 
-        for (int i=0;i<s.size();i++){
+        for(int i=0;i<s.size();i++){
             if (s[i]=='('){
                 min++;
                 max++;
-            }else if (s[i]==')'){
+            }else if(s[i]==')'){
                 min--;
                 max--;
             }else{
@@ -18,7 +19,7 @@ public:
             if (max<0) return false;
         }
 
-        if (min<=0 && max>=0) return true;
+        if (min<=0 && 0<=max) return true;
         return false;
     }
 };
