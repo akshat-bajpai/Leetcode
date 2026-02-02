@@ -4,18 +4,16 @@ public:
         return a[1]<b[1];
     }
     int eraseOverlapIntervals(vector<vector<int>>& intervals) {
-        sort(intervals.begin(),intervals.end(),comp);
-        if (intervals.size()==0) return 0;
-        vector<int> temp;
-        int n=intervals.size();
         int ans=0;
-        temp=intervals[0];
 
-        for (int i=1;i<n;i++){
-            if (temp[1]>intervals[i][0]){
-                ans++;
+        sort(intervals.begin(),intervals.end(),comp);
+        int last=INT_MIN;
+
+        for(int i=0;i<intervals.size();i++){
+            if (intervals[i][0]>=last){
+                last=intervals[i][1];
             }else{
-                temp=intervals[i];
+                ans++;
             }
         }
         return ans;
