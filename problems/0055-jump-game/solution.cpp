@@ -5,12 +5,8 @@ public:
 
         for (int i=0;i<nums.size();i++){
             if (i>maxi) return false;
-            
-            maxi=max(maxi,i+nums[i]);
-            if (maxi>=(nums.size()-1)) return true;
+            maxi=max(maxi,nums[i]+i);
         }
-
-        return false;
-        
+        return true;
     }
 };
