@@ -2,20 +2,13 @@ class Solution {
 public:
     vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
         int n=intervals.size();
-        vector<vector<int>> ans;
-        if (intervals.size()==0){
-            ans.push_back(newInterval);
-            return ans;
-        } 
+        if (n==0) return {newInterval};
         int i=0;
+        vector<vector<int>> ans;
 
         while (i<n && intervals[i][1]<newInterval[0]){
             ans.push_back(intervals[i]);
             i++;
-        }
-        if (i == n) {
-            ans.push_back(newInterval);
-            return ans;
         }
 
         vector<int> temp=newInterval;
@@ -26,11 +19,11 @@ public:
             i++;
         }
         ans.push_back(temp);
-
         while (i<n){
-            ans.push_back(intervals[i]);    
+            ans.push_back(intervals[i]);
             i++;
         }
         return ans;
+
     }
 };
