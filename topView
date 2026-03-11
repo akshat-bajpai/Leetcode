@@ -1,0 +1,50 @@
+/*
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+*/
+
+class Solution {
+  public:
+    vector<int> topView(Node *root) {
+        // code here
+        map<int,int> mp;
+        vector<int> ans;
+        
+        queue<pair<int,Node*>> q;
+        
+        
+        if (root==NULL) return ans;
+        
+        q.push({0,root});
+        while(!q.empty()){
+            int n=q.size();
+            for (int i=0;i<n;i++){
+                if(q.front().second->left){
+                    q.push({q.front().first-1,q.front().second->left});
+                }
+                if (q.front().second->right){
+                    q.push({q.front().first+1,q.front().second->right});
+                }
+                if (mp.find(q.front().first)==mp.end()){
+                    mp[q.front().first]=q.front().second->data;
+                }
+                q.pop();
+            }
+        }
+        
+        for (auto it : mp){
+            ans.push_back(it.second);
+        }
+        return ans;
+    }
+};
