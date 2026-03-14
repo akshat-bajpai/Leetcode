@@ -1,0 +1,90 @@
+/*
+class Node {
+  public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    Node* findTargetNode(Node* root, int target){
+        queue<Node*> q;
+        q.push(root);
+        while(!q.empty()){
+            int n=q.size();
+            for(int i=0;i<n;i++){
+                if (q.front()->data==target){
+                    return q.front();
+                }
+                if (q.front()->left){
+                    q.push(q.front()->left);
+                }
+                if(q.front()->right){
+                    q.push(q.front()->right);
+                }
+                q.pop();
+            }
+        }
+        return NULL;
+    }
+    
+    int minTime(Node* root, int target) {
+        // code here
+        if (root==NULL) return 0;
+        Node* targetNode=findTargetNode(root,target);
+        unordered_map<Node*,Node*> parent;
+        queue<Node*>q;
+        q.push(root);
+        while(!q.empty()){
+            int n=q.size();
+            for (int i=0;i<n;i++){
+                if (q.front()->left){
+                    parent[q.front()->left]=q.front();
+                    q.push(q.front()->left);
+                }
+                if(q.front()->right){
+                    parent[q.front()->right]=q.front();
+                    q.push(q.front()->right);
+                }
+                q.pop();
+            }
+        }
+        
+        int time=-1;
+        map<Node*,bool> burnt;
+        
+        q.push(targetNode);
+        burnt[targetNode]=true;
+        while(!q.empty()){
+            time++;
+            int n=q.size();
+            for (int i=0;i<n;i++){
+                if (q.front()->left && !burnt[q.front()->left]){
+                    q.push(q.front()->left);
+                    burnt[q.front()->left]=true;
+                }
+                if (q.front()->right && !burnt[q.front()->right]){
+                    q.push(q.front()->right);
+                    burnt[q.front()->right]=true;
+                }
+                if (parent[q.front()] && !burnt[parent[q.front()]]){
+                    q.push(parent[q.front()]);
+                    burnt[parent[q.front()]]=true;
+                }
+                q.pop();
+            }
+            
+            
+        }
+        
+        return time;
+        
+    }
+};
