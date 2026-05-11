@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution{
+    public:
+
+    vector<int> bfsOfGraph(int V,vector<int>adj[]){
+        vector<int> vis(V,0);
+        vis[0]=1;
+        queue<int> q;
+        q.push(0);
+        vector<int> bfs;
+        while (!q.empty()){
+            int n=q.front();
+            q.pop();
+            bfs.push_back(n);
+            for (int i=0;i<adj[n].size();i++){
+                if (vis[adj[n][i]]==0){
+                    vis[adj[n][i]]=1;
+                    q.push(adj[n][i]);
+                }
+            }
+        }
+        return bfs;
+    }
+
+};
