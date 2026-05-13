@@ -1,0 +1,52 @@
+class Solution {
+  public:
+    string findOrder(vector<string> &words) {
+        // code here
+        vector<vector<int>> adj(26);
+        set<int>st;
+        for (int i=0;i<words.size();i++){
+            for (int j=0;j<words[i].size();j++){
+                st.insert(words[i][j]-'a');
+            }
+        }
+        for (int i=1;i<words.size();i++){
+            string word1=words[i-1];
+            string word2=words[i];
+            int l=min(word1.size(),word2.size());
+             if (word1.size() > word2.size() && word1.substr(0, l) == word2) return "";
+            for (int j=0;j<l;j++){
+                if (word1[j]!=word2[j]){
+                    adj[word1[j]-'a'].push_back(word2[j]-'a');
+                    break;
+                }
+            }
+        }
+        
+        queue<int>q;
+        vector<int> inDegree(26);
+        
+        for (int i=0;i<adj.size();i++){
+            for (auto it : adj[i]){
+                inDegree[it]++;
+            }
+        }
+        
+        for (int i=0;i<26;i++){
+            if (inDegree[i]==0) q.push(i);
+        }
+        string order="";
+        vector<int>s;
+        while (!q.empty()){
+            int node=q.front();
+            q.pop();
+            for (auto it : adj[node]){
+                inDegree[it]--;
+                if (inDegree[it]==0) q.push(it);
+            }
+            s.push_back(node);
+            if (st.find(node)!=st.end()) order+='a'+node;
+        }
+        if (s.size()==26) return order;
+        else return "";
+    }
+};
