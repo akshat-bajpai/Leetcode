@@ -1,0 +1,30 @@
+class Solution {
+  public:
+    vector<int> dijkstra(int V, vector<vector<int>> &edges, int src) {
+        // Code here
+        vector<vector<pair<int,int>>> adj(V);
+        for (int i=0;i<edges.size();i++){
+            adj[edges[i][0]].push_back({edges[i][1],edges[i][2]}); // u->(v,w)
+            adj[edges[i][1]].push_back({edges[i][0],edges[i][2]});
+        }
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        pq.push({0,src}); //weight,node
+        vector<int>dist(V,1e9);
+        dist[src]=0;
+        while (!pq.empty()){
+            int node=pq.top().second;
+            int d=pq.top().first;
+            pq.pop();
+            if (d>dist[node]) continue;
+            for (auto it : adj[node]){
+                int adjNode=it.first;
+                int edgeWeight=it.second;
+                if (dist[adjNode]>dist[node]+edgeWeight){
+                    dist[adjNode]=dist[node]+edgeWeight;
+                    pq.push({dist[node]+edgeWeight,adjNode});
+                }
+            }
+        }
+        return dist;
+    }
+};
