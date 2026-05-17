@@ -1,0 +1,61 @@
+// User function Template for C++
+class DisjointSet{
+  public:
+    vector<int> size,parent;
+    DisjointSet(int n){
+        size.resize(n,1);
+        parent.resize(n);
+        for (int i=0;i<n;i++){
+            parent[i]=i;
+        }
+    }
+    int findUParent(int node){
+        if (parent[node]==node) return node;
+        return parent[node]=findUParent(parent[node]);
+    }
+    void unionBySize(int u, int v){
+        int ulp_u=findUParent(u);
+        int ulp_v=findUParent(v);
+        if (ulp_u==ulp_v) return;
+        if (size[ulp_u]<size[ulp_v]){
+            parent[ulp_u]=ulp_v;
+            size[ulp_v]+=size[ulp_u];
+        }else{
+            parent[ulp_v]=ulp_u;
+            size[ulp_u]+=size[ulp_v];
+        }
+    }
+};
+class Solution {
+  public:
+    vector<int> numOfIslands(int n, int m, vector<vector<int>> &operators) {
+        // code here
+        vector<vector<int>> vis (n,vector<int>(m,0));
+        DisjointSet dS(n*m);
+        vector<int> answer;
+        int islands=0;
+        for (auto it : operators){
+            int r=it[0];
+            int c=it[1];
+            if (vis[r][c]==1){
+                answer.push_back(islands);
+                continue;
+            }
+            vis[r][c]=1;
+            islands++;
+            vector<int> dx={1,-1,0,0};
+            vector<int> dy={0,0,1,-1};
+            for (int i=0;i<4;i++){
+                int nrow=r+dx[i];
+                int ncol=c+dy[i];
+                if (nrow<0 || ncol<0 || nrow>=n || ncol>=m || vis[nrow][ncol]==0) continue;
+                if (dS.findUParent(m*r+c)!=dS.findUParent(nrow*m+ncol)){
+                    islands--;
+                    dS.unionBySize(m*r+c,nrow*m+ncol);
+                }
+            }
+            answer.push_back(islands);
+        }
+        return answer;
+    }
+};
