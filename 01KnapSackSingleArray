@@ -1,0 +1,19 @@
+class Solution {
+  public:
+    int knapsack(int W, vector<int> &val, vector<int> &wt) {
+        // code here
+        int n=val.size();
+        //DP[i,w]= Maximum total value considering till ith index, with residual weight=w
+        vector<int> prev(W+1,0);
+        for (int i=0;i<=W;i++){
+            prev[i]=wt[0]<=i?val[0] : 0;
+        }
+        for (int i=1;i<n;i++){
+            for (int j=W;j>=1;j--){
+                prev[j]=prev[j];
+                if (j-wt[i]>=0) prev[j]=max(prev[j],prev[j-wt[i]]+val[i]);
+            }
+        }
+        return prev[W];
+    }
+};
