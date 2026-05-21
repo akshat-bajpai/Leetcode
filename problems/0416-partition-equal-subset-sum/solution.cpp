@@ -8,7 +8,7 @@ public:
 
         for (int i=1;i<n;i++){
             vector<bool> curi(sum+1,false);
-            for (int j=1;j<=sum;j++){
+            for (int j=0;j<=sum;j++){
                 bool notTake=prev[j];
                 bool take=false;
                 if (j-nums[i]>=0) take=prev[j-nums[i]];
