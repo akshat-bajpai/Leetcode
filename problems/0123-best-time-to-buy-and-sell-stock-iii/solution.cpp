@@ -2,33 +2,24 @@ class Solution {
 public:
     int maxProfit(vector<int>& prices) {
         int n=prices.size();
-        //dp[ind][buy_feasibility][transactions_completed]
-
-        //f(ind,buy,tcount)
-        //if (buy)
-        //      f(ind+1,buy,tcount), f(ind+1,!buy,tcount)-prices[ind]
-        //else 
-        //      f(ind+1,buy,tcount), f(ind+1,!buy,tcount+1)+prices[ind]
-        vector<vector<vector<int>>> dp(n+1,vector<vector<int>>(2,vector<int>(3)));
-
-        for (int i=0;i<2;i++){
-            for (int j=0;j<3;j++){
-                dp[n][i][j]=0;
-            }
+        vector<vector<int>> dp(n+1,vector<int>(5));
+        for (int i=0;i<4;i++){
+            dp[n][i]=0;
+        }
+        for (int i=0;i<=n;i++){
+            dp[i][4]=0;
         }
 
         for (int i=n-1;i>=0;i--){
-            for (int j=0;j<2;j++){
-                for (int k=0;k<3;k++){
-                    if (j==1){
-                        dp[i][j][k]=k==2?dp[i+1][j][k] : max(dp[i+1][0][k]-prices[i], dp[i+1][j][k]);
-                    }else{
-                        dp[i][j][k]=k==2?dp[i+1][0][k] : max(dp[i+1][0][k],dp[i+1][1][k+1]+prices[i]);
-                    }
+            for (int j=0;j<4;j++){
+                if (j%2==0){
+                    dp[i][j]=max(dp[i+1][j],-prices[i]+dp[i+1][j+1]);
+                }else{
+                    dp[i][j]=max(dp[i+1][j],prices[i]+dp[i+1][j+1]);
                 }
             }
         }
 
-        return dp[0][1][0];
+        return dp[0][0];
     }   
 };
