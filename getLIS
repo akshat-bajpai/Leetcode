@@ -1,0 +1,32 @@
+class Solution {
+  public:
+    vector<int> getLIS(vector<int>& arr) {
+        // Code here
+        int n=arr.size();
+        vector<int> dp(n,1);
+        vector<int> hash(n);
+        int maxi=0;
+        int lastIndex=0;
+        for (int i=0;i<n;i++){
+            hash[i]=i;
+            for (int prev=0;prev<i;prev++){
+                if (dp[prev]+1>dp[i] && arr[prev]<arr[i]){
+                    dp[i]=dp[prev]+1;
+                    hash[i]=prev;
+                }
+            }
+            if (dp[i]>maxi){
+                lastIndex=i;
+                maxi=dp[i];
+            }
+        }
+        vector<int> answer;
+        while (hash[lastIndex]!=lastIndex){
+            answer.push_back(arr[lastIndex]);
+            lastIndex=hash[lastIndex];
+        }
+        answer.push_back(arr[lastIndex]);
+        reverse(answer.begin(),answer.end());
+        return answer;
+    }
+};
