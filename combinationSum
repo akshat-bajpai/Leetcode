@@ -1,0 +1,23 @@
+class Solution {
+public:
+    void helper(int i, vector<int>& candidates, int target, vector<int> curr, int sum, set<vector<int>>& ans){
+        if (i==candidates.size()){
+            if (sum==target){
+                ans.insert(curr);
+            }
+            return;
+        }
+        if (sum>target) return;
+        helper(i+1,candidates,target,curr,sum,ans);
+        curr.push_back(candidates[i]);
+        sum+=candidates[i];
+        helper(i,candidates,target,curr,sum,ans);
+    }
+
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        set<vector<int>> st;
+        helper(0,candidates,target,{},0,st);
+        vector<vector<int>> ans(st.begin(),st.end());
+        return ans;
+    }
+};
