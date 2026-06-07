@@ -1,0 +1,33 @@
+class Solution {
+  public:
+    bool isSafe(int ind, int col, vector<vector<int>>& adj, vector<int>& color){
+        for (auto it : adj[ind]){
+            if (color[it]==col){
+                return false;
+            }
+        }
+        return true;
+    }
+    bool helper(int ind,int v, vector<vector<int>>& edges, vector<vector<int>>& adj, int m, vector<int>& color){
+        if (ind==v) return true;
+        
+        for (int i=0;i<m;i++){
+            if (isSafe(ind,i,adj,color)){
+                color[ind]=i;
+                if (helper(ind+1,v,edges,adj,m,color)) return true;
+                color[ind]=-1;
+            }
+        }
+        return false;
+    }
+    bool graphColoring(int v, vector<vector<int>> &edges, int m) {
+        // code here
+        vector<vector<int>> adj(v);
+        for (int i=0;i<edges.size();i++){
+            adj[edges[i][0]].push_back(edges[i][1]);
+            adj[edges[i][1]].push_back(edges[i][0]);
+        }
+        vector<int> color(v,-1);
+        return helper(0,v,edges,adj,m,color);
+    }
+};
