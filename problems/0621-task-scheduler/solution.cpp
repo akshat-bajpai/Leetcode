@@ -1,30 +1,40 @@
 class Solution {
 public:
-int leastInterval(vector<char>& tasks, int n) {
-    unordered_map<char, int> freq;
-    for (char t : tasks) freq[t]++;
-
-    priority_queue<int> pq;
-    for (auto &p : freq)
-        pq.push(p.second);
-
-    int time = 0;
-
-    while (!pq.empty()) {
-        vector<int> temp;
-        int cycle = n + 1;
-        while (cycle-- && !pq.empty()) {
-            int cnt = pq.top(); pq.pop();
-            if (cnt - 1 > 0)
-                temp.push_back(cnt - 1);
-            time++;
+    int leastInterval(vector<char>& tasks, int n) {
+        unordered_map<char,int> mpp;
+        for (int i=0;i<tasks.size();i++){
+            if (mpp.find(tasks[i])==mpp.end()){
+                mpp[tasks[i]]=1;
+            }else{
+                mpp[tasks[i]]++;
+            }
         }
-        for (int x : temp)
-            pq.push(x);
-
-        if (pq.empty()) break;
-        time += cycle + 1;
+        priority_queue<int> pq;
+        for (auto it : mpp){
+            pq.push(it.second);
+        }
+        int time=0;
+        while (!pq.empty()){
+            vector<int> temp;
+            for (int i=0;i<=n;i++){
+                if (!pq.empty()){
+                    int top=pq.top();
+                    top--;
+                    temp.push_back(top);
+                    pq.pop();
+                }
+            }
+            for (int i=0;i<temp.size();i++){
+                if (temp[i]!=0){
+                    pq.push(temp[i]);
+                }  
+            }
+            if (pq.empty()){
+                time+=temp.size();
+            }else{
+                time+=n+1;
+            }
+        }
+        return time;
     }
-    return time;
-}
 };
