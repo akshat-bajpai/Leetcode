@@ -11,58 +11,41 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode* answerDummy=new ListNode(-1);
-        ListNode* temp=answerDummy;
-        ListNode* temp1=l1;
-        ListNode* temp2=l2;
+        ListNode* p1=l1;
+        ListNode* p2=l2;
+        ListNode* dummyHead=new ListNode(-1);
+        ListNode* ptr=dummyHead;
         int carry=0;
-        while (temp1!=nullptr && temp2!=nullptr){
-            int sum= temp1->val + temp2->val + carry;
-            if (sum<10){
-                ListNode* newNode=new ListNode(sum);
-                temp->next=newNode;
-                carry=0;
-            }else{
-                ListNode* newNode=new ListNode(sum%10);
-                temp->next=newNode;
-                carry=1;
-            }
-            temp=temp->next;
-            temp1=temp1->next;
-            temp2=temp2->next;
+        while (p1!= NULL && p2!=NULL){
+            int sum=carry+p1->val+p2->val;
+            ListNode* newNode=new ListNode(sum%10);
+            ptr->next=newNode;
+            ptr=newNode;
+            carry=sum/10;
+            p1=p1->next;p2=p2->next;
         }
-        while (temp1!=nullptr){
-            int sum= temp1->val+carry;
-            if (sum<10){
-                ListNode* newNode=new ListNode(sum);
-                temp->next=newNode;
-                carry=0;
-            }else{
-                ListNode* newNode=new ListNode(sum%10);
-                temp->next=newNode;
-                carry=1;
-            }
-            temp=temp->next;
-            temp1=temp1->next;
+        while (p1!=NULL){
+            int sum=carry+p1->val;
+            ListNode* newNode=new ListNode(sum%10);
+            ptr->next=newNode;
+            ptr=newNode;
+            carry=sum/10;
+            p1=p1->next;
         }
-        while (temp2!=nullptr){
-            int sum= temp2->val+carry;
-            if (sum<10){
-                ListNode* newNode=new ListNode(sum);
-                temp->next=newNode;
-                carry=0;
-            }else{
-                ListNode* newNode=new ListNode(sum%10);
-                carry=1;
-                temp->next=newNode;
-            }
-            temp=temp->next;
-            temp2=temp2->next;
+        while (p2!=NULL){
+            int sum=carry+p2->val;
+            ListNode* newNode=new ListNode(sum%10);
+            ptr->next=newNode;
+            ptr=newNode;
+            carry=sum/10;
+            p2=p2->next;
         }
-        if (carry==1){
-            ListNode* newNode= new ListNode(1);
-            temp->next=newNode;
+        if (carry!=0){
+            ListNode* newNode=new ListNode(carry);
+            ptr->next=newNode;
+            ptr=newNode;
         }
-        return answerDummy->next;
+        
+        return dummyHead->next;
     }
 };
