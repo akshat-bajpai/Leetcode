@@ -1,0 +1,48 @@
+class Solution {
+  public:
+  
+    int mod_merge(vector<int>& nums, int low, int mid, int high){
+        vector<int> temp(high-low+1);
+        int i=low,j=mid+1;
+        int ind=0;
+        int count=0;
+        //1 3 5 8.  4 5 6
+        while (i<=mid && j<=high){
+            if (nums[i]<=nums[j]){
+                temp[ind]=nums[i];
+                ind++;i++;
+            }else{
+                count+=mid-i+1;
+                temp[ind]=nums[j];
+                ind++;j++;
+            }
+        }
+        while (i<=mid){
+            temp[ind]=nums[i];
+            ind++;i++;
+        }
+        while(j<=high){
+            temp[ind]=nums[j];
+            ind++;j++;
+        }
+        for (int k=low;k<=high;k++){
+            nums[k]=temp[k-low];
+        }
+        return count;
+    }
+    int mod_merge_sort(vector<int>& nums, int low, int high){
+        if (low>=high){
+            return 0;
+        }
+        int mid=low+(high-low)/2;
+        int l=mod_merge_sort(nums,low,mid);
+        int r=mod_merge_sort(nums,mid+1,high);
+        int c=mod_merge(nums,low,mid,high);
+
+        return l+r+c;
+    }
+    int inversionCount(vector<int> &arr) {
+        // Code Here
+        return mod_merge_sort(arr,0,arr.size()-1);
+    }
+};
