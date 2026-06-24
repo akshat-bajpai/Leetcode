@@ -10,61 +10,56 @@
  */
 class Solution {
 public:
-
-
-    ListNode* middleNode(ListNode* node){
-        if (node==nullptr || node->next==nullptr) return node;
-        ListNode* slow=node;
-        ListNode* fast=node;
-        while (fast->next!=nullptr && fast->next->next!=nullptr){
+    ListNode* merge(ListNode* low, ListNode* midNext){
+        ListNode* ptr1=low;
+        ListNode* ptr2=midNext;
+        ListNode* dummyHead=new ListNode(-1);
+        ListNode* dummyPtr=dummyHead;
+        while (ptr1 && ptr2){
+            if (ptr1->val<=ptr2->val){
+                dummyPtr->next=ptr1;
+                ptr1=ptr1->next;
+                dummyPtr=dummyPtr->next;
+            }else{
+                dummyPtr->next=ptr2;
+                ptr2=ptr2->next;
+                dummyPtr=dummyPtr->next;
+            }
+        }
+        while (ptr1){
+            dummyPtr->next=ptr1;
+            ptr1=ptr1->next;
+            dummyPtr=dummyPtr->next;
+        }while (ptr2){
+            dummyPtr->next=ptr2;
+            ptr2=ptr2->next;
+            dummyPtr=dummyPtr->next;
+        }
+        return dummyHead->next;
+    }
+    ListNode* middle(ListNode* head){
+        if (head==NULL) return NULL;
+        ListNode* slow=head;
+        ListNode* fast=head;
+        ListNode* prev=NULL;
+        while(fast && fast->next){
+            prev=slow;
             slow=slow->next;
             fast=fast->next->next;
         }
-        ListNode* x=slow->next;
-        slow->next=nullptr;
-        return x;
+        return prev;
     }
-
-    ListNode* merge(ListNode* firstNode, ListNode* secondNode){
-        ListNode* dummy=new ListNode(-1);
-        ListNode* temp=dummy;
-        ListNode* temp1=firstNode;
-        ListNode* temp2=secondNode;
-
-        while (temp1!=nullptr && temp2!=nullptr){
-            if (temp1->val<=temp2->val){
-                temp->next=temp1;
-                temp=temp->next;
-                temp1=temp1->next;
-            }else{
-                temp->next=temp2;
-                temp=temp->next;
-                temp2=temp2->next;
-            }
-        }
-        while (temp1!=nullptr){
-            temp->next=temp1;
-            temp=temp->next;
-            temp1=temp1->next;
-        }
-        while (temp2!=nullptr){
-            temp->next=temp2;
-            temp=temp->next;
-            temp2=temp2->next;
-        }
-        return dummy->next;
-
+    ListNode* mergeSort(ListNode* head){
+        if (head==NULL || head->next==NULL) return head;
+        ListNode* mid=middle(head);
+        ListNode* midNext=mid->next;
+        mid->next=NULL;
+        head=mergeSort(head);
+        midNext=mergeSort(midNext);
+        head=merge(head,midNext);
+        return head;
     }
-
-    ListNode* mS(ListNode* head){
-        if (head==nullptr || head->next==nullptr) return head;
-        ListNode* middle=middleNode(head);
-        ListNode* left=mS(head);
-        ListNode* right=mS(middle);
-        return merge(left,right);
-    }
-
     ListNode* sortList(ListNode* head) {
-        return mS(head);  
+        return mergeSort(head);
     }
 };
