@@ -11,41 +11,45 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode* p1=l1;
-        ListNode* p2=l2;
-        ListNode* dummyHead=new ListNode(-1);
-        ListNode* ptr=dummyHead;
+        ListNode* dummy=new ListNode(-1);
+        ListNode* dummyPtr=dummy;
+        ListNode* ptr1=l1;
+        ListNode* ptr2=l2;
         int carry=0;
-        while (p1!= NULL && p2!=NULL){
-            int sum=carry+p1->val+p2->val;
+        while (ptr1 && ptr2){
+            int sum=ptr1->val+ptr2->val+carry;
             ListNode* newNode=new ListNode(sum%10);
-            ptr->next=newNode;
-            ptr=newNode;
             carry=sum/10;
-            p1=p1->next;p2=p2->next;
+            dummyPtr->next=newNode;
+            dummyPtr=newNode;
+            ptr1=ptr1->next;
+            ptr2=ptr2->next;
         }
-        while (p1!=NULL){
-            int sum=carry+p1->val;
+        while (ptr1){
+            int sum=ptr1->val+carry;
             ListNode* newNode=new ListNode(sum%10);
-            ptr->next=newNode;
-            ptr=newNode;
             carry=sum/10;
-            p1=p1->next;
+            dummyPtr->next=newNode;
+            dummyPtr=newNode; 
+            ptr1=ptr1->next;      
         }
-        while (p2!=NULL){
-            int sum=carry+p2->val;
+        while (ptr2){
+            int sum=ptr2->val+carry;
             ListNode* newNode=new ListNode(sum%10);
-            ptr->next=newNode;
-            ptr=newNode;
             carry=sum/10;
-            p2=p2->next;
+            dummyPtr->next=newNode;
+            dummyPtr=newNode;  
+            ptr2=ptr2->next; 
         }
+
         if (carry!=0){
             ListNode* newNode=new ListNode(carry);
-            ptr->next=newNode;
-            ptr=newNode;
+            dummyPtr->next=newNode;
+            dummyPtr=newNode;
         }
-        
-        return dummyHead->next;
+
+        dummyPtr->next=NULL;
+
+        return dummy->next;
     }
 };
