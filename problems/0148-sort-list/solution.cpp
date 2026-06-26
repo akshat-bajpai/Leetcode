@@ -38,16 +38,14 @@ public:
         return dummyHead->next;
     }
     ListNode* middle(ListNode* head){
-        if (head==NULL) return NULL;
+        if (head==NULL || head->next==NULL) return head;
         ListNode* slow=head;
-        ListNode* fast=head;
-        ListNode* prev=NULL;
-        while(fast && fast->next){
-            prev=slow;
+        ListNode* fast=head->next->next;
+        while (fast!=NULL && fast->next!=NULL){
             slow=slow->next;
             fast=fast->next->next;
         }
-        return prev;
+        return slow;
     }
     ListNode* mergeSort(ListNode* head){
         if (head==NULL || head->next==NULL) return head;
