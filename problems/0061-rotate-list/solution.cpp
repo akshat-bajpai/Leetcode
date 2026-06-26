@@ -10,49 +10,43 @@
  */
 class Solution {
 public:
-
-    ListNode* reverseLL(ListNode* head){
-        if (head==nullptr || head->next==nullptr) return head;
-        ListNode* temp=head;
-        ListNode* prev=nullptr;
-        while(temp!=nullptr){
-            temp=temp->next;
-            head->next=prev;
-            prev=head;
-            head=temp;
+    ListNode* reverse(ListNode* head){
+        ListNode* prev=NULL;
+        ListNode* ptr=head;
+        while(ptr){
+            ListNode* temp=ptr->next;
+            ptr->next=prev;
+            prev=ptr;
+            ptr=temp;
         }
         return prev;
     }
-
-
     ListNode* rotateRight(ListNode* head, int k) {
-        if (head==nullptr || head->next==nullptr) return head;
-        int len=0;
-        ListNode* lenTemp=head;
-        while (lenTemp!=nullptr){
-            len++;
-            lenTemp=lenTemp->next;
+        if (head==NULL  || head->next==NULL) return head;
+        ListNode* ptr=head;
+        int size=0;
+        while(ptr){
+            size++;
+            ptr=ptr->next;
         }
-        k=k%len;
+        k=k%size;
         if (k==0) return head;
-        ListNode* rotatePoint;
-        head=reverseLL(head);
-        ListNode* temp=head;
-        int c=1;
-        while (temp!=nullptr){
-            if (c==k){
-                rotatePoint=temp;
-                break;
-            }
-            temp=temp->next;
+        head=reverse(head);
+        int c=0;
+        ptr=head;
+        ListNode* prev=NULL;
+        while (c<k && ptr){
             c++;
+            prev=ptr;
+            ptr=ptr->next;
         }
-        temp=head;
-        ListNode* save=rotatePoint->next;
-        rotatePoint->next=nullptr;
-        head=reverseLL(head);
-        save=reverseLL(save);
-        temp->next=save;
+        if (prev==NULL) return head;
+        ListNode* temp=prev->next;
+        prev->next=NULL;
+        ListNode* connect=head;
+        head=reverse(head);
+        ListNode* otherEnd=reverse(temp);
+        connect->next=otherEnd;
         return head;
 
     }
