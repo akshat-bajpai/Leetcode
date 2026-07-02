@@ -1,0 +1,70 @@
+/*
+Definition for Node
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+*/
+
+class Solution {
+  public:
+    void leftBoundary(Node* root, vector<int>& arr){
+        Node* cur=root->left;
+        while (cur){
+            if (cur->left || cur->right) arr.push_back(cur->data);
+            if (cur->left){
+                cur=cur->left;
+            }else{
+                cur=cur->right;
+            }
+        }
+    }
+    void leafNoedes(Node* root, vector<int>& arr){
+        stack<Node*>st;
+        if (root) st.push(root);
+        while (!st.empty()){
+            Node* top=st.top();
+            st.pop();
+            if (top->left==NULL && top->right==NULL) arr.push_back(top->data);
+            if (top->right) st.push(top->right);
+            if (top->left) st.push (top->left);
+        }
+    }
+    void reverseRightBoundary(Node* root,vector<int>& arr){
+        vector<int> temp;
+        Node* cur=root->right;
+        while (cur){
+            if (cur->left || cur->right) temp.push_back(cur->data);
+            if (cur->right){
+                cur=cur->right;
+            }else{
+                cur=cur->left;
+            }
+        }
+        for (int i=temp.size()-1;i>=0;i--){
+            arr.push_back(temp[i]);
+        }
+    }
+    vector<int> boundaryTraversal(Node *root) {
+        // code here
+        vector<int> arr;
+        if (!root) return arr;
+        if (root->left==NULL && root->right==NULL) {
+            arr.push_back(root->data);
+            return arr;
+        }
+        arr.push_back(root->data);
+        
+        leftBoundary(root,arr);
+        leafNoedes(root,arr);
+        reverseRightBoundary(root,arr);
+        return arr;
+    }
+};
