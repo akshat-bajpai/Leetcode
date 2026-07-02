@@ -20,7 +20,6 @@ public:
         if (root->right){
             sum+=root->right->val;
         }
-        if (sum==root->val) return true;
-        return false;
+        return sum==root->val;
     }
 };
