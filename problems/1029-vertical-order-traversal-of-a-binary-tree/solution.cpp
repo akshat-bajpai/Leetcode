@@ -11,52 +11,30 @@
  */
 class Solution {
 public:
-    static bool comp(vector<int>a, vector<int>b){
-        if (a[1]==b[1]) return a[0]<b[0];
-        return a[1]<b[1];
-    }
-    void helper(TreeNode* root, map<int,vector<vector<int>>>& mp, int& mini, int& maxi, int hL, int vL){
-        mini=min(mini,hL);
-        maxi=max(maxi,hL);
-        vector<int> temp;
-        temp.push_back(root->val);
-        temp.push_back(vL);
-        if (mp.find(hL)==mp.end()){
-            mp[hL]={temp};
-        }else{
-            mp[hL].push_back(temp);
-        }
-        
-        if (root->left){
-            helper(root->left,mp,mini,maxi,hL-1,vL+1);
-        }
-
-        if (root->right){
-            helper(root->right,mp,mini,maxi,hL+1,vL+1);
-        }
-
-    }
     vector<vector<int>> verticalTraversal(TreeNode* root) {
-        vector<vector<int>> ans;
-        if (root==NULL){
-            return ans;
+        map<int,map<int,multiset<int>>> mpp;
+        queue<pair<TreeNode*,pair<int,int>>> q;
+        if (root) q.push({root,{0,0}});
+        while (!q.empty()){
+            pair<TreeNode*,pair<int,int>> p=q.front();
+            q.pop();
+            int col=p.second.first;
+            int row=p.second.second;
+            TreeNode* node=p.first;
+            mpp[col][row].insert(node->val);
+            if (node->left) q.push({node->left,{col-1,row+1}});
+            if (node->right) q.push({node->right,{col+1,row+1}});
         }
-        map<int,vector<vector<int>>> mp;
-        int maxi=0;
-        int mini=0;
-        helper(root,mp,mini,maxi,0,0);
-
-        for (int i=mini;i<=maxi;i++){
-            vector<vector<int>> temp=mp[i];
-            sort(temp.begin(),temp.end(),comp);
-            vector<int>temp2;
-            for (int i=0;i<temp.size();i++){
-                temp2.push_back(temp[i][0]);
+        vector<vector<int>> ans;
+        for (auto it : mpp){
+            vector<int> thisCol;
+            for (auto iter:it.second){
+                for (auto a : iter.second){
+                    thisCol.push_back(a);
+                }
             }
-            ans.push_back(temp2);
+            ans.push_back(thisCol);
         }
         return ans;
-
-
     }
 };
