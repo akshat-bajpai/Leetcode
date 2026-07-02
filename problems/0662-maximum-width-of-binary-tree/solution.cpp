@@ -1,46 +1,28 @@
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- * int val;
- * TreeNode *left;
- * TreeNode *right;
- * TreeNode() : val(0), left(nullptr), right(nullptr) {}
- * TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- * TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
 class Solution {
 public:
-    int widthOfBinaryTree(TreeNode* root) {
-        if (!root) return 0;
-        unsigned long long max_width = 0;
-        queue<pair<TreeNode*, unsigned long long>> q;
-        q.push({root, 0});
-
-        while (!q.empty()) {
-            int size = q.size();
-            unsigned long long level_min = q.front().second;
-            unsigned long long first, last;
-
-            for (int i = 0; i < size; i++) {
-                unsigned long long curr_id = q.front().second - level_min;
-                TreeNode* node = q.front().first;
+    int widthOfBinaryTree(TreeNode* root){
+        long long width=0;
+        queue<pair<TreeNode*, long long>> q;
+        if (root) q.push({root,0});
+        while (!q.empty()){
+            int n=q.size();
+            long long first=q.front().second;
+            long long last;
+            for (int i=0;i<n;i++){
+                auto p=q.front();
                 q.pop();
-
-                if (i == 0) first = curr_id;
-                if (i == size - 1) last = curr_id;
-
-                if (node->left) {
-                    q.push({node->left, 2 * curr_id + 1});
+                TreeNode* node=p.first;
+                long long index=p.second-first;
+                last=index;
+                if (node->left){
+                    q.push({node->left,index*2+1});
                 }
-                if (node->right) {
-                    q.push({node->right, 2 * curr_id + 2});
+                if (node->right){
+                    q.push({node->right,index*2+2});
                 }
             }
-
-            max_width = max(max_width, last - first + 1);
+            width=max(width,last+1);
         }
-
-        return (int)max_width;
+        return width;
     }
 };
