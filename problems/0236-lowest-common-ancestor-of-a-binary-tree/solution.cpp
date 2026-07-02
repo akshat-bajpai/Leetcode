@@ -9,31 +9,12 @@
  */
 class Solution {
 public:
-    bool helpFindingPath(TreeNode* root, TreeNode* p, vector<TreeNode*>& ans){
-        if (root==NULL) return false;
-        
-        ans.push_back(root);
-        if (root==p) return true;
-        if (helpFindingPath(root->left,p,ans) || helpFindingPath(root->right,p,ans)){
-            return true;
-        }
-        ans.pop_back();
-        return false;
-    }
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        vector<TreeNode*> path_p;
-        vector<TreeNode*> path_q;
-        helpFindingPath(root,p,path_p);
-        helpFindingPath(root,q,path_q);
-        TreeNode* ans=NULL;
-        
-        for (int i=0;i<min(path_p.size(),path_q.size());i++){
-            if (path_p[i]==path_q[i]){
-                ans=path_p[i];
-            }
-            else break;
-        }
-        return ans;
-        
+        if (root==NULL || root==p || root==q) return root;
+        TreeNode* l=lowestCommonAncestor(root->left,p,q);
+        TreeNode* r=lowestCommonAncestor(root->right,p,q);
+        if (l==NULL) return r;
+        else if (r==NULL) return l;
+        else return root;
     }
 };
