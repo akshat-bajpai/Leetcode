@@ -11,23 +11,20 @@
  */
 class Solution {
 public:
-    TreeNode* buildTree(vector<int>& preorder, int preStart, int preEnd, vector<int>& inorder, int inStart, int inEnd,unordered_map <int,int>& hash){
-        if (preStart>preEnd || inStart>inEnd) return NULL;
-
-        TreeNode* root=new TreeNode(preorder[preStart]);
-        int inPosition=hash[preorder[preStart]];
-
-        root->left=buildTree(preorder,preStart+1,preStart+inPosition-inStart,inorder,inStart,inPosition-1,hash);
-        root->right=buildTree(preorder,preStart+inPosition-inStart+1,preEnd,inorder,inPosition+1,inEnd,hash);
-
-        return root;
+    TreeNode* build(vector<int>& preorder, int prestart, int preend, vector<int>& inorder, int instart, int inend, unordered_map<int,int>& mpp){
+        if (prestart>preend) return NULL;
+        TreeNode* newNode=new TreeNode(preorder[prestart]);
+        int inpos=mpp[preorder[prestart]];
+        int left=inpos-instart;
+        newNode->left=build(preorder,prestart+1,prestart+left,inorder,instart,inpos-1,mpp);
+        newNode->right=build(preorder,prestart+left+1,preend,inorder,inpos+1,inend,mpp);
+        return newNode;
     }
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        unordered_map<int,int> hash;
+        unordered_map<int,int> mpp;
         for (int i=0;i<inorder.size();i++){
-            hash[inorder[i]]=i;
+            mpp[inorder[i]]=i;
         }
-        return buildTree(preorder,0,preorder.size()-1,inorder,0,inorder.size()-1,hash);
-
+        return build(preorder,0,preorder.size()-1,inorder,0,inorder.size()-1,mpp);
     }
 };
