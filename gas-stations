@@ -1,0 +1,26 @@
+class Solution {
+  public:
+    double minMaxDist(vector<int> &stations, int K) {
+        // C ode here
+        long double low=0;
+        long double high=0;
+        for (int i=1;i<stations.size();i++){
+            if (stations[i]-stations[i-1]>high) high=stations[i]-stations[i-1];
+        }
+        while (high-low>1e-6){
+            long double mid=(low+high)/2;
+            int c=0;
+            for (int i=1;i<stations.size();i++){
+                int n=((stations[i]-stations[i-1])/mid);
+                if (n*mid==stations[i]-stations[i-1]) n--;
+                c+=n;
+            }
+            if (c<=K){
+                high=mid;
+            }else{
+                low=mid;
+            }
+        }
+        return high;
+    }
+};
