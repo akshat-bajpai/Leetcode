@@ -1,0 +1,20 @@
+class Solution {
+  public:
+    void dfsFunc(vector<vector<int>>& adj, vector<int>& dfsArray, vector<int>& vis, int node){
+        vis[node]=1;
+        dfsArray.push_back(node);
+        for (auto it : adj[node]){
+            if (!vis[it]){
+                dfsFunc(adj,dfsArray,vis,it);
+            }
+        }
+    }
+    vector<int> dfs(vector<vector<int>>& adj) {
+        // Code here
+        vector<int> dfsArray;
+        vector<int> vis(adj.size());
+        dfsFunc(adj,dfsArray,vis,0);
+        return dfsArray;
+        
+    }
+};
