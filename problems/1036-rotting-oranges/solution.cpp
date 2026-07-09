@@ -1,41 +1,45 @@
 class Solution {
 public:
     int orangesRotting(vector<vector<int>>& grid) {
-        int dx[4]={1,-1,0,0};
-        int dy[4]={0,0,+1,-1};
-        int rotten=0;
+        int m=grid.size(),n=grid[0].size();
+        int dr[]={1,-1,0,0};
+        int dc[]={0,0,1,-1};
         int total=0;
+        int rotten=0;
+        vector<vector<int>> vis(m,vector<int>(n,0));
         queue<pair<int,int>> q;
-        for (int i=0;i<grid.size();i++){
-            for (int j=0;j<grid[0].size();j++){
-                if (grid[i][j]==2){
+        for (int i=0;i<m;i++){
+            for (int j=0;j<n;j++){
+                if (grid[i][j]==1){
+                    total++;
+                }else if (grid[i][j]==2){
+                    total++;
+                    vis[i][j]=1;
                     q.push({i,j});
-                    rotten++;
-                    total++;
-                }else if (grid[i][j]==1){
-                    total++;
                 }
             }
         }
-        int minutes=0;
-
+        if (total==0) return 0;
+        
+        int time=-1;
         while (!q.empty()){
+            time++;
             int s=q.size();
             for (int i=0;i<s;i++){
-                pair<int,int> f=q.front();
+                auto node=q.front();
+                rotten++;
                 q.pop();
                 for (int i=0;i<4;i++){
-                    int x=f.first+dx[i];
-                    int y=f.second+dy[i];
-                    if (x<0 || y<0 ||x>=grid.size() || y>=grid[0].size() || grid[x][y]!=1) continue;
-                    q.push({x,y});
-                    grid[x][y]=2;
-                    rotten++;
+                    int nrow=node.first+dr[i];
+                    int ncol=node.second+dc[i];
+                    if (nrow>=0 && ncol>=0 && nrow<m && ncol<n && vis[nrow][ncol]==0 && grid[nrow][ncol]==1) {
+                        q.push({nrow,ncol});
+                        vis[nrow][ncol]=1;
+                    }
                 }
             }
-            if (!q.empty()) minutes++;
         }
-        if (rotten==total) return minutes;
+        if (rotten==total) return time;
         return -1;
     }
 };
