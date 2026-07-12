@@ -3,11 +3,11 @@ public:
     int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         vector<vector<pair<int,int>>> adj(n+1);
         for (int i=0;i<times.size();i++){
-            adj[times[i][0]].push_back({times[i][1],times[i][2]}); //u->(v,w)
+            adj[times[i][0]].push_back({times[i][1],times[i][2]});
         }
-        vector<int> dist(n+1,1e9);
-        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        vector<int> dist(n+1,INT_MAX);
         dist[k]=0;
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
         pq.push({0,k});
         while (!pq.empty()){
             int d=pq.top().first;
@@ -16,17 +16,17 @@ public:
             for (auto it : adj[node]){
                 int adjNode=it.first;
                 int edgeWeight=it.second;
-                if (dist[adjNode]>dist[node]+edgeWeight){
-                    dist[adjNode]=dist[node]+edgeWeight;
+                if (dist[adjNode]>d+edgeWeight){
+                    dist[adjNode]=d+edgeWeight;
                     pq.push({dist[adjNode],adjNode});
                 }
             }
         }
-        int t=INT_MIN;
-        for (int i=1;i<n+1;i++){
-            t=max(t,dist[i]);
-            if (dist[i]==1e9) return -1;
+        int ans=-1;
+        for (int i=1;i<dist.size();i++){
+            if (dist[i]==INT_MAX) return -1;
+            ans=max(ans,dist[i]);
         }
-        return t;
+        return ans;
     }
 };
