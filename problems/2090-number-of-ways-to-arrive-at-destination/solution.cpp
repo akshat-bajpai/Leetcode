@@ -10,7 +10,6 @@ public:
         vector<long long> dist(n,LLONG_MAX);
         priority_queue<pair<long long ,int>,vector<pair<long long,int>>,greater<pair<long long,int>>> pq;
         dist[0]=0;
-        //priority queue -> distance,node
         pq.push({0,0});
         vector<long long>ways(n,0);
         ways[0]=1;
