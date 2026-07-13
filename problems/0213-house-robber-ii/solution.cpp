@@ -1,35 +1,26 @@
 class Solution {
 public:
     int rob(vector<int>& nums) {
-        //case 1: we dont take n-1th and take 0th
-        int prev2=0;
-        int prev=nums[0];
-        int curi=nums[0];
-        for (int i=1;i<nums.size()-1;i++){
-            int take=prev2+nums[i];
-            int notTake=prev;
-            curi=max(take,notTake);
-            prev2=prev;
-            prev=curi;
+        int n=nums.size();
+        //case 1: take 0 house not take n-1 house
+        //case 2 not take 0 house
+
+        vector<int> dp(n,0);
+        dp[0]=0; //not take;
+        for (int i=1;i<n;i++){
+            int take=nums[i]+(i==1?0:dp[i-2]);
+            int notTake=dp[i-1];
+            dp[i]=max(take,notTake);
         }
 
-        int case1=curi;
-        //case 1 dont take 0th
-
-        prev2=0;
-        if (nums.size()==1) return nums[0];
-        prev=nums[1];
-        curi=prev;
-        for (int i=2;i<nums.size();i++){
-            int take=prev2+nums[i];
-            int notTake=prev;
-            curi=max(take,notTake);
-            prev2=prev;
-            prev=curi;
+        vector<int> dp2(n,0);
+        dp2[0]=nums[0];
+        for (int i=1;i<n-1;i++){
+            int take=nums[i] + (i==1?0:dp2[i-2]);
+            int notTake=dp2[i-1];
+            dp2[i]=max(take,notTake);
         }
-
-        int case2=curi;
-
-        return max(case1, case2);
+        if (n==1) return nums[0];
+        return max(dp[n-1],dp2[n-2]);
     }
 };
