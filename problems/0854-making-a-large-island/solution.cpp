@@ -1,12 +1,12 @@
 class DisjointSet{
-  public: 
+public:
     vector<int> size,parent;
-
     DisjointSet(int n){
-        size.resize(n,1);
+        size.resize(n);
         parent.resize(n);
         for (int i=0;i<n;i++){
             parent[i]=i;
+            size[i]=1;
         }
     }
     int findUParent(int node){
@@ -16,7 +16,7 @@ class DisjointSet{
     void unionBySize(int u, int v){
         int ulp_u=findUParent(u);
         int ulp_v=findUParent(v);
-        if(ulp_u==ulp_v) return;
+        if (ulp_u==ulp_v) return;
         if (size[ulp_u]<size[ulp_v]){
             parent[ulp_u]=ulp_v;
             size[ulp_v]+=size[ulp_u];
@@ -25,55 +25,50 @@ class DisjointSet{
             size[ulp_u]+=size[ulp_v];
         }
     }
-    int sizeOfUnit(int node){
-        int p=findUParent(node);
-        return size[p];
-    }
 };
 
 class Solution {
 public:
     int largestIsland(vector<vector<int>>& grid) {
         int n=grid.size();
-        DisjointSet dS(n*n);
-        int largest=0;
-        int dr[4]={1,-1,0,0};
-        int dc[4]={0,0,1,-1};
-        int oneExists=false;
-        for (int i=0;i<n;i++){
-            for (int j=0;j<n;j++){
-                if (grid[i][j]==1){
-                    oneExists=true;
-                    for (int k=0;k<4;k++){
-                        int nrow=i+dr[k];
-                        int ncol=j+dc[k];
-                        if (nrow<0 || ncol<0 || nrow>=n || ncol>= n || grid[nrow][ncol]==0) continue;
-                        dS.unionBySize(i*n+j,nrow*n+ncol);
-                    }
-                }
-            }
-        }
+        int dr[]={0,0,1,-1};
+        int dc[]={1,-1,0,0};
+        DisjointSet ds(n*n);
+        int ans=0;
 
         for (int i=0;i<n;i++){
             for (int j=0;j<n;j++){
-                if (grid[i][j]==0){
-                    set<int> st;
-                    int s=1;
-                    for (int k=0;k<4;k++){
-                        int nrow=i+dr[k];
-                        int ncol=j+dc[k];
-                        if (nrow<0 || ncol<0 || nrow>=n || ncol>= n || grid[nrow][ncol]==0) continue;
-                        int p=dS.findUParent(nrow*n+ncol);
-                        if (st.find(p)==st.end()){
-                            st.insert(p);
-                            s+=dS.sizeOfUnit(p);
+                if (grid[i][j]==1){
+                    for (int dir=0;dir<4;dir++){
+                        int nrow=i+dr[dir];
+                        int ncol=j+dc[dir];
+                        if (nrow>=0 && ncol>=0 && nrow<n && ncol<n && grid[nrow][ncol]==1){
+                            ds.unionBySize(n*nrow+ncol,n*i+j);
                         }
                     }
-                    largest=max(largest,s);
                 }
             }
         }
-        if (oneExists==true && largest==0) return n*n;
-        return largest;
+        if (ds.size[ds.findUParent(0)]==n*n) return n*n;
+        for (int i=0;i<n;i++){
+            for (int j=0;j<n;j++){
+                if (grid[i][j]==0){
+                    int size=1;
+                    set<int> st;
+                    for (int dir=0;dir<4;dir++){
+                        int nrow=i+dr[dir];
+                        int ncol=j+dc[dir];
+                        if (nrow>=0 && ncol>=0 && nrow<n && ncol<n && grid[nrow][ncol]==1){
+                            if (st.find(ds.findUParent(n*nrow+ncol))==st.end()){
+                                st.insert(ds.findUParent(n*nrow+ncol));
+                                size+=ds.size[ds.findUParent(n*nrow+ncol)];
+                            }
+                        }
+                    }
+                    ans=max(ans,size);
+                }
+            }
+        }
+        return ans;
     }
 };
