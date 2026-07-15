@@ -1,52 +1,73 @@
-class DisjointSet{
+class DisjointSet {
+    vector<int> parent, size;
+
 public:
-    vector<int> size,parent;
-    DisjointSet(int n){
-        size.resize(n,1);  // ALWAYS INITIALISE WITH 1 REMEMBER, NOT 0
+    DisjointSet(int n) {
         parent.resize(n);
-        for (int i=0;i<n;i++){
-            parent[i]=i;
-        }
+        size.resize(n, 1);
+
+        for (int i = 0; i < n; i++)
+            parent[i] = i;
     }
-    int findUParent(int node){
-        if (parent[node]==node) return node;
-        return parent[node]=findUParent(parent[node]);
+
+    int findUParent(int node) {
+        if (parent[node] == node)
+            return node;
+
+        return parent[node] = findUParent(parent[node]);
     }
-    void unionBySize(int u, int v){
-        int ulp_u=findUParent(u);
-        int ulp_v=findUParent(v);
-        if (ulp_u==ulp_v) return;
-        if (size[ulp_u]<size[ulp_v]){
-            parent[ulp_u]=ulp_v;
-            size[ulp_v]+=size[ulp_u];
-        }else{
-            parent[ulp_v]=ulp_u;
-            size[ulp_u]+=size[ulp_v];
-        }
+
+    void unionBySize(int u, int v) {
+        u = findUParent(u);
+        v = findUParent(v);
+
+        if (u == v)
+            return;
+
+        if (size[u] < size[v])
+            swap(u, v);
+
+        parent[v] = u;
+        size[u] += size[v];
     }
 };
 
 class Solution {
 public:
     int removeStones(vector<vector<int>>& stones) {
-        int n=stones.size();
-        int maxCol=0;
-        int maxRow=0;
-        for (int i=0;i<n;i++){
-            maxRow=max(maxRow,stones[i][0]);
-            maxCol=max(maxCol,stones[i][1]);
+
+        int maxRow = 0;
+        int maxCol = 0;
+
+        for (auto &stone : stones) {
+            maxRow = max(maxRow, stone[0]);
+            maxCol = max(maxCol, stone[1]);
         }
-        DisjointSet dS(maxRow+maxCol+2);
-        unordered_map<int,int> mp;
-        for (int i=0;i<n;i++){
-            dS.unionBySize(stones[i][0],stones[i][1]+maxRow+1);
-            mp[stones[i][0]]=1;
-            mp[stones[i][1]+maxRow+1]=1;
+
+        int totalNodes = maxRow + maxCol + 2;
+
+        DisjointSet ds(totalNodes);
+
+        unordered_set<int> usedNodes;
+
+        for (auto &stone : stones) {
+
+            int rowNode = stone[0];
+            int colNode = stone[1] + maxRow + 1;
+
+            ds.unionBySize(rowNode, colNode);
+
+            usedNodes.insert(rowNode);
+            usedNodes.insert(colNode);
         }
-        int c=0;
-        for (auto it : mp){
-            if (dS.findUParent(it.first)==it.first) c++;
+
+        int components = 0;
+
+        for (int node : usedNodes) {
+            if (ds.findUParent(node) == node)
+                components++;
         }
-        return n-c;
+
+        return stones.size() - components;
     }
 };
