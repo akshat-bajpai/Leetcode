@@ -40,7 +40,7 @@ public:
             prev=ptr;
             ptr=ptr->next;
         }
-        if (prev==NULL) return head;
+
         ListNode* temp=prev->next;
         prev->next=NULL;
         ListNode* connect=head;
