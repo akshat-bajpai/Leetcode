@@ -1,37 +1,36 @@
 class Solution {
-public:
+public: 
     int timer=1;
-    void dfs(vector<vector<int>>& adj, vector<int>& vis, int node, int parent,vector<int>& tin, vector<int>& low,vector<vector<int>>& bridges){
+    void dfs(int node, int parent, vector<vector<int>>& adj, vector<int>& vis, vector<int>& tin, vector<int>& low, vector<vector<int>>& edges){
         vis[node]=1;
         tin[node]=timer;
         low[node]=timer;
         timer++;
-
-        for (auto it : adj[node]){
-            if (it==parent) continue;
-            if (vis[it]==0){
-                dfs(adj,vis,it,node,tin,low,bridges);
-                low[node]=min(low[node],low[it]);
-                if (low[it]>tin[node]){
-                    bridges.push_back({it,node});
-                }
+        for (auto adjNode : adj[node]){
+            if (!vis[adjNode]){
+                dfs(adjNode,node,adj,vis,tin,low,edges);
+                low[node]=min(low[node],low[adjNode]);
             }else{
-                low[node]=min(low[node],low[it]);
+                if (adjNode!=parent){
+                    low[node]=min(low[node],low[adjNode]);
+                }
             }
         }
-
+        if (parent!=-1 && low[node]>tin[parent]){
+            edges.push_back({{node,parent}});
+        }
     }
     vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
-        vector<int> vis(n,0);
         vector<vector<int>> adj(n);
-        vector<int> tin(n);
-        vector<int> low(n);
         for (int i=0;i<connections.size();i++){
             adj[connections[i][0]].push_back(connections[i][1]);
             adj[connections[i][1]].push_back(connections[i][0]);
         }
-        vector<vector<int>> bridges;
-        dfs(adj,vis,0,-1,tin,low,bridges);
-        return bridges;
+        vector<int> vis(n,0);
+        vector<int> tin(n);
+        vector<int> low(n);
+        vector<vector<int>> edges;
+        dfs(0,-1,adj,vis,tin,low,edges);
+        return edges;
     }
 };
