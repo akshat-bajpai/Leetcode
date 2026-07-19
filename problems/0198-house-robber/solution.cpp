@@ -2,14 +2,16 @@ class Solution {
 public:
     int rob(vector<int>& nums) {
         int n=nums.size();
-        vector<int> dp(n,0);
-        //dp[i]=max profit by robbing houses till i
-        //if i taken cant take i-1
+        if (n==0) return 0;
+        vector<int> dp(n);
+        //dp[i]=max profit robbing houses till index i
         dp[0]=nums[0];
-        if (nums.size()==1) return dp[0];
-        dp[1]=max(nums[0],nums[1]);
+        if (n==1) return dp[0];
+        dp[1]=max(nums[1],nums[0]);
         for (int i=2;i<n;i++){
-            dp[i]=max(dp[i-1],dp[i-2]+nums[i]);
+            int take=dp[i-2]+nums[i];
+            int notTake=dp[i-1];
+            dp[i]=max(take,notTake);
         }
         return dp[n-1];
     }
