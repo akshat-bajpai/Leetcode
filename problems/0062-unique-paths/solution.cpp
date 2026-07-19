@@ -1,16 +1,17 @@
 class Solution {
 public:
     int uniquePaths(int m, int n) {
-        vector<int> prev(n,0);
-        for (int i=0;i<m;i++){
-            vector<int> temp(n,0);
-            for (int j=0;j<n;j++){
-                if (i==0 && j==0) temp[j]=1;
-                temp[j]+=prev[j];
-                if (j-1>=0)temp[j]+=temp[j-1];
+        vector<int>prev(n,1);
+        //dp[i][j]=number of ways to reach i,j
+        //come from above: i-1,j ; come from left: i,j-1;
+
+        for (int i=1;i<m;i++){
+            vector<int> curi=prev;
+            for (int j=1;j<n;j++){
+                curi[j]=prev[j]+curi[j-1];
             }
-            prev=temp;
+            prev=curi;
         }
-        return prev[n-1] ;
+        return prev[n-1];
     }
 };
