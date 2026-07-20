@@ -1,40 +1,35 @@
 class Solution {
 public:
     int cherryPickup(vector<vector<int>>& grid) {
-        int r=grid.size();
-        int c=grid[0].size();
-        vector<vector<vector<int>>> dp(r,vector<vector<int>>(c,vector<int>(c,-1e8)));
-        //DP[i][j1][j2]
-        dp[0][0][c-1]= c==1?grid[0][0] : grid[0][0]+grid[0][c-1];
-        vector<int> del={-1,0,1};
-        for (int i=0;i<r;i++){
-            for (int j1=0;j1<c;j1++){
-                for (int j2=0;j2<c;j2++){
-                    if (i==0) continue;
-                    for (int dj1=0;dj1<3;dj1++){
-                        for (int dj2=0;dj2<3;dj2++){
-                            int nj1=j1+del[dj1];
-                            int nj2=j2+del[dj2];
-                            if (nj1<0 || nj2<0 || nj1>=c || nj2>=c) continue;
-                            if (j1==j2){
-                                dp[i][j1][j2]=max(dp[i][j1][j2],grid[i][j1]+dp[i-1][nj1][nj2]);
-                            }else{
-                                dp[i][j1][j2]=max(dp[i][j1][j2],grid[i][j1]+grid[i][j2]+dp[i-1][nj1][nj2]);
-                            }
+        int rows=grid.size();
+        int cols=grid[0].size();
+        //dp[i][j][r]=max cherries collected when robot 1 is at i, 2 is at j and their row is r
+        vector<vector<vector<int>>> dp(cols, vector<vector<int>>(cols,vector<int>(rows,-1)));
+        dp[0][cols-1][0]=(0==cols-1)?grid[0][0]:grid[0][0]+grid[0][cols-1];
+        //dp[i][j][r]
+        // -> dp[i][j][r-1]
+        // -> dp[i][j-1][r-1]
+        // -> dp[i][j+1][r-1]
+        for (int r=1;r<rows;r++){
+            for (int i=0;i<cols;i++){
+                for (int j=cols-1;j>=0;j--){
+                    for (int d1=-1;d1<=1;d1++){
+                        for (int d2=-1;d2<=1;d2++){
+                            int pi=i+d1;
+                            int pj=j+d2;
+                            if (pi<0 || pj<0 || pi>=cols || pj>= cols ||dp[pi][pj][r-1]==-1 ) continue;
+                            dp[i][j][r]=max(dp[i][j][r],dp[pi][pj][r-1]+(i==j?grid[r][i]:grid[r][i]+grid[r][j]));
                         }
                     }
                 }
             }
         }
-
-        int answer=INT_MIN;
-
-        for (int i=0;i<c;i++){
-            for (int j=0;j<c;j++){
-                answer=max(answer,dp[r-1][i][j]);
+        int ans=dp[0][0][rows-1];
+        for (int i=0;i<cols;i++){
+            for (int j=0;j<cols;j++){
+                ans=max(ans,dp[i][j][rows-1]);
             }
         }
-
-        return answer;
+        return ans;
     }
 };
