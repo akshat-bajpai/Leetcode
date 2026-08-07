@@ -9,14 +9,53 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
+      - name: Preflight - secrets are present
+        env:
+          LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
+          LEETCODE_CSRF_TOKEN: ${{ secrets.CSRFTOKEN }}
+        run: |
+          missing=0
+          if [ -z "$LEETCODE_SESSION" ]; then
+            echo "::error::Secret LEETCODE_SESSION is not set."
+            missing=1
+          fi
+          if [ -z "$LEETCODE_CSRF_TOKEN" ]; then
+            echo "::error::Secret CSRFTOKEN is not set."
+            missing=1
+          fi
+          if [ "$missing" -eq 1 ]; then
+            echo "::error::Add them under Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          echo "Both secrets present."
+
+      - name: Preflight - session cookie is still valid
+        env:
+          LEETCODE_SESSION: ${{ secrets.LEETCODE_SESSION }}
+          LEETCODE_CSRF_TOKEN: ${{ secrets.CSRFTOKEN }}
+        run: |
+          resp=$(curl -sS --max-time 30 https://leetcode.com/graphql \
+            -H 'content-type: application/json' \
+            -H "x-csrftoken: $LEETCODE_CSRF_TOKEN" \
+            -H 'referer: https://leetcode.com' \
+            -H "cookie: LEETCODE_SESSION=$LEETCODE_SESSION; csrftoken=$LEETCODE_CSRF_TOKEN" \
+            --data '{"query":"query { userStatus { isSignedIn username } }"}')
+          if ! echo "$resp" | grep -q '"isSignedIn":true'; then
+            echo "::error::LeetCode rejected the session cookie - it is missing, expired, or invalid."
+            echo "::error::Log in at leetcode.com, copy a fresh LEETCODE_SESSION and csrftoken from DevTools > Application > Cookies, then update both repo secrets."
+            exit 1
+          fi
+          echo "Session accepted by LeetCode."
+
       - name: Sync LeetCode submissions
         uses: joshcai/leetcode-sync@v1.7
         with:
           github-token: ${{ github.token }}
-          leetcode-csrf-token: ${{ secrets.LEETCODE_CSRF_TOKEN }}
+          leetcode-csrf-token: ${{ secrets.CSRFTOKEN }}
           leetcode-session: ${{ secrets.LEETCODE_SESSION }}
           destination-folder: problems
           verbose: true
