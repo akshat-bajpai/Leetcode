@@ -1,53 +1,42 @@
 class Solution {
 public:
-    string shortestCommonSupersequence(string s1, string s2) {
-        int n=s1.size();
-        int m=s2.size();
-
-        vector<vector<int>> dp(n+1,vector<int>(m+1));
-
-        for (int i=0;i<=n;i++){
-            dp[i][0]=0;
-        }
-        for (int i=0;i<=m;i++){
-            dp[0][i]=0;
-        }
-
-        for (int i=1;i<=n;i++){
-            for (int j=1;j<=m;j++){
-                if (s1[i-1]==s2[j-1]){
+    string shortestCommonSupersequence(string str1, string str2) {
+        int n1=str1.size();
+        int n2=str2.size();
+        vector<vector<int>> dp(n1+1,vector<int>(n2+1));
+        for (int i=1;i<=n1;i++){
+            for (int j=1;j<=n2;j++){
+                if (str1[i-1]==str2[j-1]){
                     dp[i][j]=1+dp[i-1][j-1];
-                    continue;
+                }else{
+                    dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
                 }
-                dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
             }
         }
-
-        int i=n;
-        int j=m;
-        string ans="";
-
+        string s="";
+        int i=n1,j=n2;
         while (i>0 && j>0){
-            if (s1[i-1]==s2[j-1]){
-                ans+=s1[i-1];
+            if (str1[i-1]==str2[j-1]){
+                s=str1[i-1]+s;
                 i--;j--;
-            }else if (dp[i-1][j]>dp[i][j-1]){
-                ans+=s1[i-1];
-                i--;
             }else{
-                ans+=s2[j-1];
-                j--;
+                if (dp[i-1][j]>dp[i][j-1]){
+                    s=str1[i-1]+s;
+                    i--;
+                }else{
+                    s=str2[j-1]+s;
+                    j--;
+                }
             }
         }
         while (i>0){
-            ans+=s1[i-1];
+            s=str1[i-1]+s;
             i--;
         }
         while (j>0){
-            ans+=s2[j-1];
+            s=str2[j-1]+s;
             j--;
         }
-        reverse(ans.begin(),ans.end());
-        return ans;
+        return s;
     }
 };
