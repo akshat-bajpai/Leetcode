@@ -2,33 +2,32 @@ class Solution {
 public:
     vector<int> largestDivisibleSubset(vector<int>& nums) {
         int n=nums.size();
-        atexit(+[](){ ofstream("display_runtime.txt") << 0 << '\n'; });
-        vector<int> dp(n,1), hash(n);
         sort(nums.begin(),nums.end());
-        int maxi=0;
-        int lastIndex=0;
+        int maxi=1;
+        int largestIndex=0;
+        vector<int> dp(n,1);
+        vector<int> hash(n);
         for (int i=0;i<n;i++){
             hash[i]=i;
-            for (int prev=0;prev<i;prev++){
-                if (dp[i]<dp[prev]+1 && (nums[i]%nums[prev]==0 || nums[prev]%nums[i]==0)){
-                    dp[i]=dp[prev]+1;
-                    hash[i]=prev;
+            for (int j=0;j<i;j++){
+                if (nums[i]%nums[j]==0){
+                    if (dp[i]<dp[j]+1){
+                        dp[i]=dp[j]+1;
+                        hash[i]=j;
+                    }
                 }
             }
             if (dp[i]>maxi){
                 maxi=dp[i];
-                lastIndex=i;
+                largestIndex=i;
             }
         }
-
-        vector<int> temp;
-
-        while (hash[lastIndex]!=lastIndex){
-            temp.push_back(nums[lastIndex]);
-            lastIndex=hash[lastIndex];
+        vector<int> s;
+        s.push_back(nums[largestIndex]);
+        while (hash[largestIndex]!=largestIndex){
+            largestIndex=hash[largestIndex];
+            s.push_back(nums[largestIndex]);
         }
-        temp.push_back(nums[lastIndex]);
-        return temp;
-
+        return s;
     }
 };
