@@ -3,35 +3,30 @@ public:
     static bool comp(string a, string b){
         return a.size()<b.size();
     }
-    bool isValid(string a, string b){
-        if (a.size()!=b.size()-1) return false;
-        int n=b.size();
-        int i=0,j=0;
-        while (j<n){
-            if (a[i]==b[j]){
-                i++;j++;
-            }else{
-                j++;
+    bool validPair(string word1, string word2){
+        if (word1.size()>=word2.size()) return false;
+        int i=0;
+        for (int j=0;j<word2.size();j++){
+            if (word1[i]==word2[j]){
+                i++;
             }
         }
-        if (i==a.size()) return true;
+        if (i==word2.size()-1) return true;
         return false;
     }
     int longestStrChain(vector<string>& words) {
-        sort(words.begin(),words.end(),comp);
         int n=words.size();
+        sort(words.begin(),words.end(),comp);
         vector<int> dp(n,1);
-        int maxi=1;
-        for (int i=0;i<n;i++){
+        int largest=1;
+        for (int i=1;i<n;i++){
             for (int j=0;j<i;j++){
-                if (isValid(words[j],words[i])){
-                    if (dp[i]<dp[j]+1){
-                        dp[i]=dp[j]+1;
-                    }
+                if (validPair(words[j],words[i])){
+                    dp[i]=max(dp[i],dp[j]+1);
                 }
             }
-            maxi=max(maxi,dp[i]);
+            largest=max(largest,dp[i]);
         }
-        return maxi;
+        return largest;
     }
 };
