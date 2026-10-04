@@ -3,23 +3,21 @@ public:
     bool checkValidString(string s) {
         int min=0;
         int max=0;
-
-        for(int i=0;i<s.size();i++){
+        for (int i=0;i<s.size();i++){
             if (s[i]=='('){
+                max++;
                 min++;
-                max++;
-            }else if(s[i]==')'){
-                min--;
+            }else if (s[i]==')'){
                 max--;
-            }else{
                 min--;
+                if (min<0) min=0;
+                if (max<0) return false;
+            }else{
                 max++;
+                min--;
+                if (min<0) min=0;
             }
-            if (min<0) min=0;
-            if (max<0) return false;
         }
-
-        if (min<=0 && 0<=max) return true;
-        return false;
+        return min==0;
     }
 };
